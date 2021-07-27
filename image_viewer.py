@@ -1,21 +1,29 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-#
-# Copyright 2021 ManiakApps software foundation
-#
-# This file is part of ManiakApps.
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation GPLv3
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, see <https://www.gnu.org/licenses/old-licenses/gpl-3.0.en.html>.
+""" Short description of this Python module.
+Longer description of this module.
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with
+this program. If not, see <https://www.gnu.org/licenses/>.
+"""
+
+__author__ = "ManiakApps"
+__authors__ = ["ManuelPizano"]
+__contact__ = "admin@maniakapps.com"
+__copyright__ = "Copyright 2021, ManiakApps"
+__credits__ = ["ManuelPizano"]
+__date__ = "2021/07/27"
+__deprecated__ = False
+__email__ = "admin@maniakapps.com"
+__license__ = "GPLv3"
+__maintainer__ = "developer"
+__status__ = "Testing"
+__version__ = "0.0.1"
 
 import getpass
 import PIL.Image
@@ -109,25 +117,14 @@ class MainFrame(Frame):
         Visualizes the previous image and updates the number
         :returns
         """
-        self.numero_pagina = self.numero_pagina - 1
-        if self.numero_pagina < 0:
-            self.numero_pagina = 0
-        self.im.seek(self.numero_pagina)
-        self.cambiar_imagen()
-        self.num_imagen_sig.set(str(self.numero_pagina + 1))
+        pass
 
     def visualizar_siguiente(self):
         """
               Visualizes the next image and updates the number
               :returns
               """
-        self.numero_pagina = self.numero_pagina + 1
-        try:
-            self.im.seek(self.numero_pagina)
-        except EOFError:
-            self.numero_pagina = self.numero_pagina - 1
-        self.cambiar_imagen()
-        self.num_imagen_sig.set(str(self.numero_pagina + 1))
+        pass
 
 
 class App(Tk):
@@ -140,15 +137,21 @@ class App(Tk):
         The constructor initializes the App title, and its properties.
         """
         super().__init__()
+        # sets the window title
         self.title('Visualizador de Imagenes by ManiakApps')
+        # Users cannot resize window neither width or height
         self.resizable(False, False)
+
+        # getting the monitor 1 resolution, in case there are ore than one monitor list can be indexed
         self.resolution = get_monitors()
         self.width = self.resolution[0].width
         self.height = self.resolution[0].height
+
         # doing // 8 and // 4 on Linux due to errors
         self.geometry(f"{int(self.width * 0.80)}x{int(self.height * 0.80)}+{self.width // 8}-{self.height // 4}")
 
 
+# The following part runs the code
 if __name__ == "__main__":
     app = App()
     frame = MainFrame(app)
