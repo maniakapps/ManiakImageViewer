@@ -25,11 +25,10 @@ __maintainer__ = "developer"
 __status__ = "Testing"
 __version__ = "0.0.1"
 
-import getpass
-import PIL.Image
-import platform
-
 try:
+    import getpass
+    import PIL.Image
+    import platform
     from Tkinter import *
     import tkFileDialog as fileDialog
     import PIL
@@ -84,11 +83,15 @@ class MainFrame(Frame):
         based on the image type either bitmap or a different type.
         """
         if self.im.mode == "1":  # bitmap image
-            self.imagen = PIL.ImageTk.BitmapImage(self.im, foreground="white")
+            self.imagen = PIL.ImageTk.BitmapImage(self.im,
+                                                  foreground="white")
         else:  # photo image
             self.imagen = PIL.ImageTk.PhotoImage(image=self.im)
-        self.etiqueta.config(image=self.imagen, bg="#000000",
-                             width=self.imagen.width(), height=self.imagen.height())
+
+        self.etiqueta.config(image=self.imagen,
+                             bg="#000000",
+                             width=self.width,
+                             height=self.height)
 
     def abrir(self):
         """
@@ -97,20 +100,33 @@ class MainFrame(Frame):
         Also updates the num of page label
         :return:
         """
-        filename = ""
-        user = getpass.getuser()
-        if platform.system() == "Windows":
-            filename = filedialog.askopenfilename(initialdir="C:/Users/%s" % user,
-                                                  filetypes=[("Imagenes", "*.png *.jpg *.jpge")])
-        elif platform.system() == "Linux":
-            filename = filedialog.askopenfilename(initialdir="/home/%s/Documents" % user,
-                                                  filetypes=[("Imagenes", "*.png *.jpg *.jpge")])
+        try:
+            filename = ""
+            user = getpass.getuser()
+            if platform.system() == "Windows":
+                filename = filedialog.askopenfilename(initialdir="C:/Users/%s" % user,
+                                                      filetypes=[("Imagenes", "*.png *.jpg *.jpge")])
+            elif platform.system() == "Linux":
+                filename = filedialog.askopenfilename(initialdir="/home/%s/Documents" % user,
+                                                      filetypes=[("Imagenes", "*.png *.jpg *.jpge")])
 
-        if filename != "":
-            self.im = PIL.Image.open(filename)
-        self.cambiar_imagen()
-        self.numero_pagina = 0
-        self.num_imagen_sig.set(str(self.numero_pagina + 1))
+            if filename != "":
+
+                self.im = PIL.Image.open(filename)
+                w = self.im.width
+                h = self.im.height
+                if self.im.width > (self.width - (self.width // 3)):
+                    w = (self.width // 3)
+                if self.im.height > (self.im.height - (self.im.height // 3)):
+                    h =self.height - (self.height // 6)
+                size = (w, h)
+                self.im = self.im.resize(size, resample=PIL.Image.BILINEAR)
+            self.cambiar_imagen()
+            self.numero_pagina = 0
+            self.num_imagen_sig.set(str(self.numero_pagina + 1))
+        except Exception as e:
+            print("Se produjo un error")
+            print(e)
 
     def visualizar_anterior(self):
         """
@@ -140,12 +156,12 @@ class App(Tk):
         # sets the window title
         self.title('Visualizador de Imagenes by ManiakApps')
         # Users cannot resize window neither width or height
-        self.resizable(False, False)
+        self.resizable(True, True)
 
         # getting the monitor 1 resolution, in case there are ore than one monitor list can be indexed
         self.resolution = get_monitors()
-        self.width = self.resolution[0].width
-        self.height = self.resolution[0].height
+        self.width = self.resolution[0].width - 100
+        self.height = self.resolution[0].height - 100
 
         # doing // 8 and // 4 on Linux due to errors
         self.geometry(f"{int(self.width * 0.80)}x{int(self.height * 0.80)}+{self.width // 8}-{self.height // 4}")
